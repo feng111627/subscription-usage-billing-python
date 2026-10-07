@@ -30,8 +30,8 @@ BUSINESS_AREAS = {
 ANCHOR = datetime(2026, 1, 1, tzinfo=timezone.utc)
 
 
-def _area(item: pytest.Item) -> str:
-    module = item.module.__name__.rsplit(".", 1)[-1]
+def _area_of(nodeid: str) -> str:
+    module = nodeid.split("::", 1)[0].rsplit("/", 1)[-1].removesuffix(".py")
     return BUSINESS_AREAS.get(module, module)
 
 
@@ -44,12 +44,12 @@ def pytest_configure(config: pytest.Config) -> None:
 
 
 def pytest_runtest_logstart(nodeid: str, location) -> None:
-    logger.info("[COVERAGE] %s", nodeid)
+    logger.info("[COVERAGE] %s :: %s", _area_of(nodeid), nodeid)
 
 
 def pytest_runtest_logreport(report: pytest.TestReport) -> None:
     if report.when == "call":
-        logger.info("[RESULT]   %s %s", report.outcome.upper(), report.nodeid)
+        logger.info("[RESULT]   %s %s :: %s", report.outcome.upper(), _area_of(report.nodeid), report.nodeid)
 
 
 @pytest.fixture()

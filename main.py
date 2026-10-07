@@ -4,7 +4,8 @@ from __future__ import annotations
 from datetime import datetime
 
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from billing.errors import BillingError, ErrorReason
@@ -28,8 +29,11 @@ _STATUS = {
 
 
 @app.exception_handler(BillingError)
-async def billing_error_handler(_request, exc: BillingError):
-    raise HTTPException(status_code=_STATUS[exc.reason], detail=exc.reason.value)
+async def billing_error_handler(_request: Request, exc: BillingError) -> JSONResponse:
+    return JSONResponse(
+        status_code=_STATUS[exc.reason],
+        content={"error": exc.reason.value, "detail": str(exc)},
+    )
 
 
 class TierIn(BaseModel):

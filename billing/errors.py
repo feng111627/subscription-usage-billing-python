@@ -1,0 +1,30 @@
+"""业务错误码与统一异常（拒绝原因可区分）。"""
+from __future__ import annotations
+
+
+class ErrorCode:
+    VALIDATION_ERROR = "VALIDATION_ERROR"
+    MISSING_PARAMETER = "MISSING_PARAMETER"
+    INVALID_PARAMETER = "INVALID_PARAMETER"
+    PLAN_NOT_FOUND = "PLAN_NOT_FOUND"
+    PLAN_ALREADY_EXISTS = "PLAN_ALREADY_EXISTS"
+    SUBSCRIPTION_NOT_FOUND = "SUBSCRIPTION_NOT_FOUND"
+    SUBSCRIPTION_ALREADY_EXISTS = "SUBSCRIPTION_ALREADY_EXISTS"
+    DUPLICATE_EVENT = "DUPLICATE_EVENT"
+    IDEMPOTENCY_CONFLICT = "IDEMPOTENCY_CONFLICT"
+    PERIOD_CLOSED = "PERIOD_CLOSED"
+    BILL_NOT_FOUND = "BILL_NOT_FOUND"
+    INVALID_BILL_TRANSITION = "INVALID_BILL_TRANSITION"
+    BILL_ALREADY_ISSUED = "BILL_ALREADY_ISSUED"
+    FORBIDDEN = "FORBIDDEN"
+    UNAUTHENTICATED = "UNAUTHENTICATED"
+    PLAN_IN_USE = "PLAN_IN_USE"
+    PERIOD_NOT_ENDED = "PERIOD_NOT_ENDED"
+
+
+class BillingError(Exception):
+    def __init__(self, code: str, message: str, *, status_code: int = 422):
+        super().__init__(message)
+        self.code = code
+        self.message = message
+        self.status_code = status_code
